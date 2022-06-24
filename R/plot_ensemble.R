@@ -5,17 +5,17 @@
 #' @param incorrect
 #' @param tibble_prob
 #' @param order
-#' @param ...
 #'
 #' @return
 #' @export
-#'
+#' @import ggplot2
+#' @importFrom magrittr %>%
 #' @examples
-plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL, ...){
+plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL){
 
 
   if(tibble_pred %>%
-     dplyr::select(!where(is.factor)) %>%
+     dplyr::select(!tidyselect::where(is.factor)) %>%
      ncol() != 0)stop("tibble_pred some columns not factors")
 
   if(!is.null(tibble_prob)){
@@ -82,7 +82,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
                    names_pattern = "(.)(.*)") %>%
       dplyr::mutate(
         name = as.factor(name),
-        name = fct_relevel(name , names(sort(cols_order))),
+        name = forcats::fct_relevel(name , names(sort(cols_order))),
         name = as.numeric(name)
       ) %>%
       dplyr::rename(class = x, prob = y)
@@ -106,7 +106,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
       tidyr::pivot_longer(-id) %>%
       dplyr::mutate(
         name = as.factor(name),
-        name = fct_relevel(name , names(sort(cols_order))),
+        name = forcats::fct_relevel(name , names(sort(cols_order))),
         name = as.numeric(name)
       )
 

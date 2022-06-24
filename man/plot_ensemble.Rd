@@ -9,12 +9,11 @@ plot_ensemble(
   tibble_pred,
   incorrect = FALSE,
   tibble_prob = NULL,
-  order = NULL,
-  ...
+  order = NULL
 )
 }
 \arguments{
-\item{...}{}
+\item{order}{}
 }
 \description{
 Title
