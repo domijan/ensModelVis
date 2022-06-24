@@ -1,8 +1,21 @@
+#' Title
+#'
+#' @param truth
+#' @param tibble_pred
+#' @param incorrect
+#' @param tibble_prob
+#' @param order
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL, ...){
 
 
   if(tibble_pred %>%
-     select(!where(is.factor)) %>%
+     dplyr::select(!where(is.factor)) %>%
      ncol() != 0)stop("tibble_pred some columns not factors")
 
   if(!is.null(tibble_prob)){
@@ -12,16 +25,16 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
   }
 
   tib <- tibble_pred %>%
-    mutate(truth = truth,
+    dplyr::mutate(truth = truth,
            id = 1 : nrow(tibble_pred))
 
   if(is.null(order)){accuracy_vector <- tib %>%
-    summarise(across(-id,
+    dplyr::summarise(dplyr::across(-id,
                      ~ accuracy_fun(truth, .x)))
   }else {
     if(!is.data.frame(order))stop("order is not a data frame")
-    accuracy_vector <- order %>% mutate(truth = 1)
-    if(!identical(names(tib %>% select(-id)), names(accuracy_vector)))stop("order variable names not same as tibble_pred")
+    accuracy_vector <- order %>% dplyr::mutate(truth = 1)
+    if(!identical(names(tib %>% dplyr::select(-id)), names(accuracy_vector)))stop("order variable names not same as tibble_pred")
   }
 
 
@@ -34,7 +47,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
   if (!is.null(tibble_prob)) {
     tib_prob <- tibble_prob %>%
-      mutate(truth = truth, id = 1 : nrow(tib))
+      dplyr::mutate(truth = truth, id = 1 : nrow(tib))
 
     tib_prob <- tib_prob[, c(names(sort(cols_order)), "id")]
 
@@ -43,36 +56,36 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
     names(tib_prob) <- paste0("y", names(tib_prob))
 
     tib <- tib  %>%
-      rename(id = xid)
+      dplyr::rename(id = xid)
 
     tib_prob <- tib_prob  %>%
-      rename(id = yid)
+      dplyr::rename(id = yid)
 
     if (incorrect == TRUE) {
       dstinct <- !duplicated(tib %>%
-                               select(-id))
+                               dplyr::select(-id))
       tib <- tib[dstinct, ]
       tib_prob <- tib_prob[dstinct, ]
     }
 
     tib <- tib %>%
-      inner_join(tib_prob, by = "id") %>%
-      select(-id) %>%
-      arrange(across(everything())) %>%
-      mutate(id = 1:nrow(tib))
+      dplyr::inner_join(tib_prob, by = "id") %>%
+      dplyr::select(-id) %>%
+      dplyr::arrange(dplyr::across(dplyr::everything())) %>%
+      dplyr::mutate(id = 1:nrow(tib))
 
 
     tib <- tib %>%
-      mutate(ytruth = rep(1, nrow(tib))) %>%
-      pivot_longer(-id,
+      dplyr::mutate(ytruth = rep(1, nrow(tib))) %>%
+      tidyr::pivot_longer(-id,
                    names_to = c(".value", "name"),
                    names_pattern = "(.)(.*)") %>%
-      mutate(
+      dplyr::mutate(
         name = as.factor(name),
         name = fct_relevel(name , names(sort(cols_order))),
         name = as.numeric(name)
       ) %>%
-      rename(class = x, prob = y)
+      dplyr::rename(class = x, prob = y)
 
 
     p1 <- tib %>%
@@ -83,15 +96,15 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
   else{
     if (incorrect == TRUE) {
-      dstinct <- !duplicated(tib %>% select(-id))
+      dstinct <- !duplicated(tib %>% dplyr::select(-id))
       tib <- tib[dstinct, ]
     }
     tib <- tib %>%
-      select(-id) %>%
-      arrange(across(everything())) %>% #
-      mutate(id = 1:nrow(tib)) %>%
-      pivot_longer(-id) %>%
-      mutate(
+      dplyr::select(-id) %>%
+      dplyr::arrange(dplyr::across(dplyr::everything())) %>% #
+      dplyr::mutate(id = 1:nrow(tib)) %>%
+      tidyr::pivot_longer(-id) %>%
+      dplyr::mutate(
         name = as.factor(name),
         name = fct_relevel(name , names(sort(cols_order))),
         name = as.numeric(name)
