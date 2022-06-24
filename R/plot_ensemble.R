@@ -14,10 +14,7 @@
 plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL){
 
 
-  if(tibble_pred %>%
-     dplyr::select(!tidyselect::where(is.factor)) %>%
-     ncol() != 0)stop("tibble_pred some columns not factors")
-
+  if(sum(sapply(tibble_pred,is.factor))!=ncol(tibble_pred))stop("tibble_pred some columns not factors")
   if(!is.null(tibble_prob)){
     if(!identical(sort(names(tibble_prob)),  sort(names(tibble_pred))))stop("tibble_prob does not match tibble_pred")
     if(max(tibble_prob) > 1)stop("tibble_prob greater than 1")
