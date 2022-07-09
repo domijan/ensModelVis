@@ -2,8 +2,8 @@
 #'
 #' @param truth The `y` variable. In regression this is `numeric` vector, in classification this is a `factor` vector.
 #' @param tibble_pred A `data.frame` of predictions. Each column corresponds to a candidate model.
-#' @param incorrect If `TRUE` do not display observations that all models classified correctly.
-#' @param tibble_prob If not `NULL`, a `data.frame` with same column names as `tibble_pred`. Applies transparency based on the predicted probability of the class. Classifiers only.
+#' @param incorrect If `TRUE` only display incorrectly classified observations and a single observation per class that was correctly classified by all models. Classification only.
+#' @param tibble_prob If not `NULL`, a `data.frame` with same column names as `tibble_pred`. Applies transparency based on the predicted probability of the predicted class. Classification only.
 #' @param order default ordering is by `accuracy` (classification) or `RMSE` (regression). Can submit any other ordering e.g. `AUC`, which should be a `data.frame` with same column names as `tibble_pred`.
 #'
 #' @return a ggplot
@@ -11,6 +11,36 @@
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @examples
+#' data(iris)
+#' library(MASS)
+#' lda.model <- MASS::lda(Species~., data = iris)
+#' lda.pred <- MASS::predict(lda.model)
+#'
+#' library(ranger)
+#' ranger.model <- ranger::ranger(Species~., data = iris)
+#' ranger.pred <- ranger::predict(ranger.model, iris)
+#'
+#' library(ensModelVis)
+#'
+#' plot_ensemble(iris$Species,
+#' data.frame(LDA = lda.pred$class,
+#' RF = ranger.pred$predictions))
+#'
+#' plot_ensemble(iris$Species,
+#'  data.frame(LDA = lda.pred$class,
+#'   RF = ranger.pred$predictions),
+#'   incorrect= TRUE)
+#'
+#'ranger.model <- ranger::ranger(Species~., data = iris, probability = TRUE)
+#'ranger.prob <- ranger::predict(ranger.model, iris)
+#'
+#'plot_ensemble(iris$Species,
+#'   data.frame(LDA = lda.pred$class,
+#'    RF = ranger.pred$predictions),
+#'    tibble_prob = data.frame(LDA = apply(lda.pred$posterior, 1, max),
+#'    RF = apply(ranger.prob$predictions, 1, max)))
+
+
 plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL){
 
   if (length(truth) != nrow(tibble_pred))

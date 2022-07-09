@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ensemble.R
 \name{plot_ensemble}
 \alias{plot_ensemble}
-\title{Title}
+\title{Draws a plot for model predictions of ensembles of models. For classification the plot is a heatmap, for regression, scatterplot.}
 \usage{
 plot_ensemble(
   truth,
@@ -13,8 +13,49 @@ plot_ensemble(
 )
 }
 \arguments{
-\item{order}{}
+\item{truth}{The \code{y} variable. In regression this is \code{numeric} vector, in classification this is a \code{factor} vector.}
+
+\item{tibble_pred}{A \code{data.frame} of predictions. Each column corresponds to a candidate model.}
+
+\item{incorrect}{If \code{TRUE} only display incorrectly classified observations and a single observation per class that was correctly classified by all models. Classification only.}
+
+\item{tibble_prob}{If not \code{NULL}, a \code{data.frame} with same column names as \code{tibble_pred}. Applies transparency based on the predicted probability of the predicted class. Classification only.}
+
+\item{order}{default ordering is by \code{accuracy} (classification) or \code{RMSE} (regression). Can submit any other ordering e.g. \code{AUC}, which should be a \code{data.frame} with same column names as \code{tibble_pred}.}
+}
+\value{
+a ggplot
 }
 \description{
-Title
+Draws a plot for model predictions of ensembles of models. For classification the plot is a heatmap, for regression, scatterplot.
+}
+\examples{
+data(iris)
+library(MASS)
+lda.model <- lda(Species~., data = iris)
+lda.pred <- predict(lda.model)
+
+library(ranger)
+ranger.model <- ranger(Species~., data = iris)
+ranger.pred <- predict(ranger.model, iris)
+
+library(ensModelVis)
+
+plot_ensemble(iris$Species,
+data.frame(LDA = lda.pred$class,
+RF = ranger.pred$predictions))
+
+plot_ensemble(iris$Species,
+ data.frame(LDA = lda.pred$class,
+  RF = ranger.pred$predictions),
+  incorrect= TRUE)
+
+ranger.model <- ranger(Species~., data = iris, probability = TRUE)
+ranger.prob <- predict(ranger.model, iris)
+
+plot_ensemble(iris$Species,
+  data.frame(LDA = lda.pred$class,
+   RF = ranger.pred$predictions),
+   tibble_prob = data.frame(LDA = apply(lda.pred$posterior, 1, max),
+   RF = apply(ranger.prob$predictions, 1, max)))
 }
