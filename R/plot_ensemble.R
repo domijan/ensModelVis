@@ -2,7 +2,7 @@
 #'
 #' @param truth The `y` variable. In regression this is `numeric` vector, in classification this is a `factor` vector.
 #' @param tibble_pred A `data.frame` of predictions. Each column corresponds to a candidate model.
-#' @param incorrect If `TRUE` only display incorrectly classified observations and a single observation per class that was correctly classified by all models. Classification only.
+#' @param incorrect If `TRUE`, for observations that were correctly classified by all models, remove all but a single observation per class. Classification only.
 #' @param tibble_prob If not `NULL`, a `data.frame` with same column names as `tibble_pred`. Applies transparency based on the predicted probability of the predicted class. Classification only.
 #' @param order default ordering is by `accuracy` (classification) or `RMSE` (regression). Can submit any other ordering e.g. `AUC`, which should be a `data.frame` with same column names as `tibble_pred`.
 #'
@@ -13,12 +13,12 @@
 #' @examples
 #' data(iris)
 #' library(MASS)
-#' lda.model <- MASS::lda(Species~., data = iris)
-#' lda.pred <- MASS::predict(lda.model)
+#' lda.model <- lda(Species~., data = iris)
+#' lda.pred <- predict(lda.model)
 #'
 #' library(ranger)
-#' ranger.model <- ranger::ranger(Species~., data = iris)
-#' ranger.pred <- ranger::predict(ranger.model, iris)
+#' ranger.model <- ranger(Species~., data = iris)
+#' ranger.pred <- predict(ranger.model, iris)
 #'
 #' library(ensModelVis)
 #'
@@ -31,8 +31,8 @@
 #'   RF = ranger.pred$predictions),
 #'   incorrect= TRUE)
 #'
-#'ranger.model <- ranger::ranger(Species~., data = iris, probability = TRUE)
-#'ranger.prob <- ranger::predict(ranger.model, iris)
+#'ranger.model <- ranger(Species~., data = iris, probability = TRUE)
+#'ranger.prob <- predict(ranger.model, iris)
 #'
 #'plot_ensemble(iris$Species,
 #'   data.frame(LDA = lda.pred$class,
