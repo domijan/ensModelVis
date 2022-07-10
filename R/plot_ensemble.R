@@ -5,20 +5,21 @@
 #' @param incorrect If `TRUE`, for observations that were correctly classified by all models, remove all but a single observation per class. Classification only.
 #' @param tibble_prob If not `NULL`, a `data.frame` with same column names as `tibble_pred`. Applies transparency based on the predicted probability of the predicted class. Classification only.
 #' @param order default ordering is by `accuracy` (classification) or `RMSE` (regression). Can submit any other ordering e.g. `AUC`, which should be a `data.frame` with same column names as `tibble_pred`.
-#'
+#' @param facet whether to facet the plots by model (regression only).
 #' @return a ggplot
 #' @export
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @examples
 #' data(iris)
-#' library(MASS)
+#' if (require("MASS")){
 #' lda.model <- lda(Species~., data = iris)
 #' lda.pred <- predict(lda.model)
-#'
-#' library(ranger)
+#' }
+#' if (require("ranger")){
 #' ranger.model <- ranger(Species~., data = iris)
 #' ranger.pred <- predict(ranger.model, iris)
+#' }
 #'
 #' library(ensModelVis)
 #'
@@ -31,8 +32,10 @@
 #'   RF = ranger.pred$predictions),
 #'   incorrect= TRUE)
 #'
+#'if (require("ranger")){
 #'ranger.model <- ranger(Species~., data = iris, probability = TRUE)
 #'ranger.prob <- predict(ranger.model, iris)
+#'}
 #'
 #'plot_ensemble(iris$Species,
 #'   data.frame(LDA = lda.pred$class,
@@ -41,7 +44,7 @@
 #'    RF = apply(ranger.prob$predictions, 1, max)))
 
 
-plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL){
+plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = NULL, order = NULL, facet = FALSE){
 
   if (length(truth) != nrow(tibble_pred))
     stop("truth and predictions not same length.")
@@ -198,7 +201,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
     tib <- tib %>%
       tidyr::drop_na(truth)
 
-    if (ncol(tib) < 8) {
+    if (facet == FALSE) {
       p1 <- tib %>%
         tidyr::pivot_longer(-truth) %>%
         dplyr::rename(algorithm = .data$name) %>%

@@ -17,3 +17,11 @@ Imports:
     tidyr
 URL: https://github.com/domijan/ensModelVis
 BugReports: https://github.com/domijan/ensModelVis/issues
+Suggests: 
+    knitr,
+    MASS,
+    ranger,
+    rmarkdown,
+    stacks,
+    tidymodels
+VignetteBuilder: knitr

@@ -9,7 +9,8 @@ plot_ensemble(
   tibble_pred,
   incorrect = FALSE,
   tibble_prob = NULL,
-  order = NULL
+  order = NULL,
+  facet = FALSE
 )
 }
 \arguments{
@@ -17,11 +18,13 @@ plot_ensemble(
 
 \item{tibble_pred}{A \code{data.frame} of predictions. Each column corresponds to a candidate model.}
 
-\item{incorrect}{If \code{TRUE} only display incorrectly classified observations and a single observation per class that was correctly classified by all models. Classification only.}
+\item{incorrect}{If \code{TRUE}, for observations that were correctly classified by all models, remove all but a single observation per class. Classification only.}
 
 \item{tibble_prob}{If not \code{NULL}, a \code{data.frame} with same column names as \code{tibble_pred}. Applies transparency based on the predicted probability of the predicted class. Classification only.}
 
 \item{order}{default ordering is by \code{accuracy} (classification) or \code{RMSE} (regression). Can submit any other ordering e.g. \code{AUC}, which should be a \code{data.frame} with same column names as \code{tibble_pred}.}
+
+\item{facet}{whether to facet the plots by model (regression only).}
 }
 \value{
 a ggplot
@@ -31,13 +34,14 @@ Draws a plot for model predictions of ensembles of models. For classification th
 }
 \examples{
 data(iris)
-library(MASS)
+if (require("MASS")){
 lda.model <- lda(Species~., data = iris)
 lda.pred <- predict(lda.model)
-
-library(ranger)
+}
+if (require("ranger")){
 ranger.model <- ranger(Species~., data = iris)
 ranger.pred <- predict(ranger.model, iris)
+}
 
 library(ensModelVis)
 
@@ -50,8 +54,10 @@ plot_ensemble(iris$Species,
   RF = ranger.pred$predictions),
   incorrect= TRUE)
 
+if (require("ranger")){
 ranger.model <- ranger(Species~., data = iris, probability = TRUE)
 ranger.prob <- predict(ranger.model, iris)
+}
 
 plot_ensemble(iris$Species,
   data.frame(LDA = lda.pred$class,
