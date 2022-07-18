@@ -18,10 +18,12 @@ Imports:
 URL: https://github.com/domijan/ensModelVis
 BugReports: https://github.com/domijan/ensModelVis/issues
 Suggests: 
+    discrim,
     knitr,
     MASS,
     ranger,
     rmarkdown,
     stacks,
+    stringr,
     tidymodels
 VignetteBuilder: knitr
