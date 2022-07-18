@@ -24,43 +24,75 @@ This is a basic example:
 library(ensModelVis)
 
 data(iris)
-if (require("MASS")){
-lda.model <- lda(Species~., data = iris)
-lda.pred <- predict(lda.model)
+if (require("MASS")) {
+  lda.model <- lda(Species ~ ., data = iris)
+  lda.pred <- predict(lda.model)
 }
 #> Loading required package: MASS
-if (require("ranger")){
-ranger.model <- ranger(Species~., data = iris)
-ranger.pred <- predict(ranger.model, iris)
+if (require("ranger")) {
+  ranger.model <- ranger(Species ~ ., data = iris, mtry = 1)
+  ranger.pred <- predict(ranger.model, iris)
+  ranger.model2 <-
+    ranger(Species ~ .,
+           data = iris,
+           mtry = 4,
+           num.trees = 10)
+  ranger.pred2 <- predict(ranger.model2, iris)
 }
 #> Loading required package: ranger
-plot_ensemble(iris$Species,
-data.frame(LDA = lda.pred$class,
-RF = ranger.pred$predictions))
+
+
+plot_ensemble(
+  iris$Species,
+  data.frame(
+    LDA = lda.pred$class,
+    RF = ranger.pred$predictions,
+    RF2 = ranger.pred2$predictions
+  )
+)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
 
 ``` r
-plot_ensemble(iris$Species,
- data.frame(LDA = lda.pred$class,
-  RF = ranger.pred$predictions),
-  incorrect = TRUE)
+
+plot_ensemble(
+  iris$Species,
+  data.frame(
+    LDA = lda.pred$class,
+    RF = ranger.pred$predictions,
+    RF2 = ranger.pred2$predictions
+  ),
+  incorrect = TRUE
+)
 ```
 
 <img src="man/figures/README-example-2.png" width="100%" />
 
 ``` r
-if (require("ranger")){
-ranger.model <- ranger(Species~., data = iris, probability = TRUE)
-ranger.prob <- predict(ranger.model, iris)
+if (require("ranger")) {
+  ranger.model <- ranger(Species ~ ., data = iris, mtry = 1, probability = TRUE)
+  ranger.prob <- predict(ranger.model, iris)
+   ranger.model2 <-
+    ranger(Species ~ .,
+           data = iris,
+           mtry = 4,
+           num.trees = 10,
+           probability = TRUE)
+  ranger.prob2 <- predict(ranger.model2, iris)
 }
 
-plot_ensemble(iris$Species,
+plot_ensemble(
+  iris$Species,
   data.frame(LDA = lda.pred$class,
-   RF = ranger.pred$predictions),
-   tibble_prob = data.frame(LDA = apply(lda.pred$posterior, 1, max),
-   RF = apply(ranger.prob$predictions, 1, max)))
+             RF = ranger.pred$predictions,
+             RF2 = ranger.pred2$predictions),
+  tibble_prob = data.frame(
+    LDA = apply(lda.pred$posterior, 1, max),
+    RF = apply(ranger.prob$predictions, 1, max),
+    RF2 = apply(ranger.prob2$predictions, 1, max)
+  )
+)
 ```
 
 <img src="man/figures/README-example-3.png" width="100%" />
