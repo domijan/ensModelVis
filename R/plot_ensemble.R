@@ -87,11 +87,10 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
 
     cols_order <- rank(-accuracy_vector,
-                       ties.method = "first")
+                       ties.method = "last")
 
     tib <- tib[, c(names(sort(cols_order)), "id")]
 
-    tib <- tib %>% dplyr::relocate(truth)
 
     ord <-
       round(sort(as.numeric(accuracy_vector), decreasing = TRUE), 3)
@@ -108,7 +107,6 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
       tib_prob <- tib_prob[, c(names(sort(cols_order)), "id")]
 
-      tib_prob <- tib_prob %>% dplyr::relocate(truth)
 
       # add prefix before joining:
       names(tib) <- paste0("x", names(tib))
@@ -228,7 +226,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
 
       cols_order <- rank(rmse_vector,
-                         ties.method = "first")
+                         ties.method = "last")
 
       temp_rmse <-
         rmse_vector %>%
