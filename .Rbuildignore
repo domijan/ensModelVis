@@ -4,3 +4,4 @@
 ^README\.Rmd$
 ^\.github$
 ^Cran-comments\.md$
+^News\.md$
