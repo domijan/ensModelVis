@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   eval = requireNamespace("stacks", quietly = TRUE) &&
     requireNamespace("stringr", quietly = TRUE) &&
     requireNamespace("discrim", quietly = TRUE) &&
-    requireNamespace("tidymodels", quietly = TRUE)
+    requireNamespace("tidymodels", quietly = TRUE),
+  fig.width=8, fig.height=6
 )
 ```
 

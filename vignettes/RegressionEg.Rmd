@@ -11,7 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-   eval = requireNamespace("stacks", quietly = TRUE) && requireNamespace("tidymodels", quietly = TRUE) 
+   eval = requireNamespace("stacks", quietly = TRUE) && requireNamespace("tidymodels", quietly = TRUE),
+  fig.width=8, fig.height=6
 )
 ```
 
