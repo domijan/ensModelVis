@@ -11,11 +11,28 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = requireNamespace("stacks", quietly = TRUE) &&
-    requireNamespace("stringr", quietly = TRUE) &&
-    requireNamespace("discrim", quietly = TRUE) &&
-    requireNamespace("tidymodels", quietly = TRUE),
   fig.width=8, fig.height=6
+)
+```
+
+
+
+
+```{r, include = FALSE}
+if (rlang::is_installed("stacks") && 
+    rlang::is_installed("stringr") && 
+    rlang::is_installed("discrim") && 
+    rlang::is_installed("tidymodels") && 
+    rlang::is_installed("glmnet") && 
+    rlang::is_installed("nnet") &&
+    rlang::is_installed("ranger") &&
+    rlang::is_installed("MASS")) {
+  run <- TRUE
+} else {
+  run <- FALSE
+}
+knitr::opts_chunk$set(
+  eval = run
 )
 ```
 
@@ -32,7 +49,9 @@ Packages we will need:
 library(tidymodels)
 library(stacks)
 library(stringr)
+library(discrim) # for LDA
 ```
+
 
 Dataset: iris data, split the training data, scale.
 
@@ -134,7 +153,7 @@ en_res <-
 # ===================================
 
 
-library(discrim)
+
 lda_mod <-
   discrim_linear(
     ) %>%

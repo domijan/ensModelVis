@@ -10,6 +10,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom magrittr %>%
+#' @importFrom rlang is_installed
 #' @examples
 #' data(iris)
 #' if (require("MASS")){

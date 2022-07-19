@@ -11,9 +11,6 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-   eval = requireNamespace("stacks", quietly = TRUE) &&
-    requireNamespace("kernlab", quietly = TRUE) &&
-    requireNamespace("tidymodels", quietly = TRUE),
   fig.width=8, fig.height=6
 )
 ```
@@ -23,6 +20,21 @@ library(ensModelVis)
 ```
 
 
+
+```{r, include = FALSE}
+if (rlang::is_installed("stacks") && 
+    rlang::is_installed("tidymodels") && 
+    rlang::is_installed("kernlab")) {
+  run <- TRUE
+} else {
+  run <- FALSE
+}
+
+knitr::opts_chunk$set(
+  eval = run
+)
+```
+
 An example of fitting a stacked regression ensemble from `stacks` package vignette and using `ensModelVis` for visualising the models.
 
 Packages we will need:
@@ -31,7 +43,6 @@ Packages we will need:
 library(tidymodels)
 library(stacks)
 ```
-
 
 Dataset: predict `latency` based on other attributes in `tree_frogs` data exported with `stacks`. 
 

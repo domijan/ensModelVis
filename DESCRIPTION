@@ -14,14 +14,17 @@ Imports:
     forcats,
     ggplot2,
     magrittr,
+    rlang,
     tidyr
 URL: https://github.com/domijan/ensModelVis
 BugReports: https://github.com/domijan/ensModelVis/issues
 Suggests: 
     discrim,
+    glmnet,
     kernlab,
     knitr,
     MASS,
+    nnet,
     ranger,
     rmarkdown,
     stacks,
