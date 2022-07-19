@@ -1,5 +1,5 @@
 ---
-title: "RegressionEg"
+title: "Regression Example"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{RegressionEg}
@@ -23,7 +23,7 @@ library(ensModelVis)
 
 An example of fitting a stacked regression ensemble from `stacks` package vignette and using `ensModelVis` for visualising the models.
 
-Packeges we will need:
+Packages we will need:
 
 ```{r libs}
 library(tidymodels)

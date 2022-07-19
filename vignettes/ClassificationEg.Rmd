@@ -1,5 +1,5 @@
 ---
-title: "ClassificationEg"
+title: "Classification Example"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ClassificationEg}
@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+An example of fitting multiclass classification models using `tidymodels`, a stacking ensemble using the `stacks` package and using `ensModelVis` for visualising the fitted models including a majority vote ensemble.
+
 ```{r setup}
 library(ensModelVis)
 ```
@@ -32,7 +34,7 @@ library(stacks)
 library(stringr)
 ```
 
-Dataset: split the training data, scale.
+Dataset: iris data, split the training data, scale.
 
 ```{r load_tr_data}
 data(iris)
