@@ -45,7 +45,7 @@ library(ensModelVis)
 
 Packages we will need:
 
-```{r load_libraries}
+```{r load_libraries, message=FALSE}
 library(tidymodels)
 library(stacks)
 library(stringr)
