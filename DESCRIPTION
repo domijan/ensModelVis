@@ -1,10 +1,10 @@
 Package: ensModelVis
 Title: Visualisations for Model Ensembles
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Katarina", "Domijan", , "domijank@tcd.ie", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-4268-2236"))
-Description: Visualisations for model ensembles.
+Description: Displays for model fits of multiple models and their ensembles. For classification models, the plots are heatmaps, for regression, scatterplots. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
