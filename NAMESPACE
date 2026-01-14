@@ -2,5 +2,4 @@
 
 export(plot_ensemble)
 import(ggplot2)
-importFrom(magrittr,"%>%")
 importFrom(rlang,is_installed)

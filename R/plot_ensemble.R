@@ -9,7 +9,6 @@
 #' @return a ggplot
 #' @export
 #' @import ggplot2
-#' @importFrom magrittr %>%
 #' @importFrom rlang is_installed
 #' @examples
 #' data(iris)
@@ -65,24 +64,24 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
         stop("tibble_prob less than 1/no levels.")
     }
 
-    tib <- tibble_pred %>%
+    tib <- tibble_pred |>
       dplyr::mutate(truth = truth)
 
-    tib <- tib %>%
+    tib <- tib |>
       tidyr::drop_na(truth)
 
-    tib <- tib %>%
+    tib <- tib |>
       dplyr::mutate(id = 1:nrow(tib))
 
     if (is.null(order)) {
-      accuracy_vector <- tib %>%
+      accuracy_vector <- tib |>
         dplyr::summarise(dplyr::across(-.data$id,
                                        ~ accuracy_fun(truth, .x)))
     } else {
       if (!is.data.frame(order))
         stop("order is not a data frame")
-      accuracy_vector <- order %>% dplyr::mutate(truth = 1)
-      if (!identical(names(tib %>% dplyr::select(-.data$id)), names(accuracy_vector)))
+      accuracy_vector <- order |> dplyr::mutate(truth = 1)
+      if (!identical(names(tib |> dplyr::select(-.data$id)), names(accuracy_vector)))
         stop("order variable names not same as tibble_pred")
     }
 
@@ -97,13 +96,13 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
       round(sort(as.numeric(accuracy_vector), decreasing = TRUE), 3)
 
     if (!is.null(tibble_prob)) {
-      tib_prob <- tibble_prob %>%
+      tib_prob <- tibble_prob |>
         dplyr::mutate(truth = truth)
 
-      tib_prob <- tib_prob %>%
+      tib_prob <- tib_prob |>
         tidyr::drop_na(truth)
 
-      tib_prob <- tib_prob %>%
+      tib_prob <- tib_prob |>
         dplyr::mutate(id = 1:nrow(tib_prob))
 
       tib_prob <- tib_prob[, c(names(sort(cols_order)), "id")]
@@ -113,40 +112,40 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
       names(tib) <- paste0("x", names(tib))
       names(tib_prob) <- paste0("y", names(tib_prob))
 
-      tib <- tib  %>%
+      tib <- tib  |>
         dplyr::rename(id = .data$xid)
 
-      tib_prob <- tib_prob  %>%
+      tib_prob <- tib_prob  |>
         dplyr::rename(id = .data$yid)
 
       if (incorrect == TRUE) {
-        dstinct <- !duplicated(tib %>%
+        dstinct <- !duplicated(tib |>
                                  dplyr::select(-.data$id))
         tib <- tib[dstinct,]
         tib_prob <- tib_prob[dstinct,]
       }
 
-      tib <- tib %>%
-        dplyr::inner_join(tib_prob, by = "id") %>%
-        dplyr::select(-.data$id) %>%
-        dplyr::arrange(dplyr::across(dplyr::everything())) %>%
+      tib <- tib |>
+        dplyr::inner_join(tib_prob, by = "id") |>
+        dplyr::select(-.data$id) |>
+        dplyr::arrange(dplyr::across(dplyr::everything())) |>
         dplyr::mutate(id = 1:nrow(tib))
 
 
-      tib <- tib %>%
-        dplyr::mutate(ytruth = rep(1, nrow(tib))) %>%
+      tib <- tib |>
+        dplyr::mutate(ytruth = rep(1, nrow(tib))) |>
         tidyr::pivot_longer(-.data$id,
                             names_to = c(".value", "name"),
-                            names_pattern = "(.)(.*)") %>%
+                            names_pattern = "(.)(.*)") |>
         dplyr::mutate(
           name = as.factor(.data$name),
           name = forcats::fct_relevel(.data$name , names(sort(cols_order))),
           name = as.numeric(.data$name)
-        ) %>%
+        ) |>
         dplyr::rename(class = .data$x, prob = .data$y)
 
 
-      p1 <- tib %>%
+      p1 <- tib |>
         ggplot(aes(x = .data$name, y = .data$id)) +
         geom_tile(aes(fill = class, alpha = .data$prob))
 
@@ -154,14 +153,14 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
 
     else{
       if (incorrect == TRUE) {
-        dstinct <- !duplicated(tib %>% dplyr::select(-.data$id))
+        dstinct <- !duplicated(tib |> dplyr::select(-.data$id))
         tib <- tib[dstinct,]
       }
-      tib <- tib %>%
-        dplyr::select(-.data$id) %>%
-        dplyr::arrange(dplyr::across(dplyr::everything())) %>% #
-        dplyr::mutate(id = 1:nrow(tib)) %>%
-        tidyr::pivot_longer(-.data$id) %>%
+      tib <- tib |>
+        dplyr::select(-.data$id) |>
+        dplyr::arrange(dplyr::across(dplyr::everything())) |> #
+        dplyr::mutate(id = 1:nrow(tib)) |>
+        tidyr::pivot_longer(-.data$id) |>
         dplyr::mutate(
           name = as.factor(.data$name),
           name = forcats::fct_relevel(.data$name , names(sort(cols_order))),
@@ -169,7 +168,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
         )
 
 
-      p1 <- tib %>%  ggplot(aes(x = .data$name, y = .data$id)) +
+      p1 <- tib |>  ggplot(aes(x = .data$name, y = .data$id)) +
         geom_tile(aes(fill = .data$value))
 
     }
@@ -198,29 +197,29 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
       stop("non-numeric estimates")
 
 
-    tib <- tibble_pred %>%
+    tib <- tibble_pred |>
       dplyr::mutate(truth = truth)
 
-    tib <- tib %>%
+    tib <- tib |>
       tidyr::drop_na(truth)
 
     if (facet == FALSE) {
-      p1 <- tib %>%
-        tidyr::pivot_longer(-truth) %>%
-        dplyr::rename(algorithm = .data$name) %>%
+      p1 <- tib |>
+        tidyr::pivot_longer(-truth) |>
+        dplyr::rename(algorithm = .data$name) |>
         ggplot(aes(x = .data$truth, y = .data$value, col = .data$algorithm)) +
         geom_point() +
         ylab("Prediction") +
         xlab("Truth")
     } else{
       if (is.null(order)) {
-        rmse_vector <- tib %>%
+        rmse_vector <- tib |>
           dplyr::summarise(dplyr::across(dplyr::everything(),
                                          ~ rmse_fun(truth, .x)))
       } else {
         if (!is.data.frame(order))
           stop("order is not a data frame")
-        rmse_vector <- order %>% dplyr::mutate(truth = 0)
+        rmse_vector <- order |> dplyr::mutate(truth = 0)
         if (!identical(names(tib), names(rmse_vector)))
           stop("order variable names not same as tibble_pred")
       }
@@ -230,16 +229,16 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
                          ties.method = "last")
 
       temp_rmse <-
-        rmse_vector %>%
-        tidyr::pivot_longer(dplyr::everything(), values_to = "RMSE") %>%
+        rmse_vector |>
+        tidyr::pivot_longer(dplyr::everything(), values_to = "RMSE") |>
         dplyr::mutate(RMSE = round(.data$RMSE, 2))
 
-      p1 <- tib %>%
-        tidyr::pivot_longer(-truth) %>%
+      p1 <- tib |>
+        tidyr::pivot_longer(-truth) |>
         dplyr::mutate(name = as.factor(.data$name),
                name = forcats::fct_relevel(.data$name,
-                                           names(sort(cols_order))[-1])) %>%
-        dplyr::left_join(temp_rmse) %>%
+                                           names(sort(cols_order))[-1])) |>
+        dplyr::left_join(temp_rmse) |>
         ggplot(aes(x = .data$value, y = .data$truth)) +
         geom_point() +
         facet_wrap( ~ .data$RMSE + .data$name)

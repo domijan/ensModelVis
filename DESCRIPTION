@@ -8,12 +8,11 @@ Description: Displays for model fits of multiple models and their ensembles. For
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.3.3
 Imports: 
     dplyr,
     forcats,
     ggplot2,
-    magrittr,
     rlang,
     tidyr
 URL: https://github.com/domijan/ensModelVis
