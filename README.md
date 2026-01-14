@@ -56,9 +56,10 @@ plot_ensemble(
 )
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example-1.png" alt="" width="100%" />
 
 ``` r
+
 
 plot_ensemble(
   iris$Species,
@@ -71,9 +72,10 @@ plot_ensemble(
 )
 ```
 
-<img src="man/figures/README-example-2.png" width="100%" />
+<img src="man/figures/README-example-2.png" alt="" width="100%" />
 
 ``` r
+
 if (require("ranger")) {
   ranger.model <- ranger(Species ~ ., data = iris, mtry = 1, probability = TRUE)
   ranger.prob <- predict(ranger.model, iris)
@@ -99,4 +101,4 @@ plot_ensemble(
 )
 ```
 
-<img src="man/figures/README-example-3.png" width="100%" />
+<img src="man/figures/README-example-3.png" alt="" width="100%" />
