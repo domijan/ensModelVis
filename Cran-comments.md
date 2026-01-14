@@ -1,5 +1,5 @@
 ## Resubmission
-This is a resubmission.Package was archived on 2023-05-05 . In this version I have corrected issues.
+This is a resubmission. Package was archived on 2023-05-05. In this version I have corrected issues.
 
 
 ## R CMD check results
