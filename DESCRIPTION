@@ -1,6 +1,6 @@
 Package: ensModelVis
 Title: Visualisations for Model Ensembles
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: 
     person("Katarina", "Domijan", , "domijank@tcd.ie", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-4268-2236"))
