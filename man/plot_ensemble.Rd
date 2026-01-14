@@ -22,7 +22,7 @@ plot_ensemble(
 
 \item{tibble_prob}{If not \code{NULL}, a \code{data.frame} with same column names as \code{tibble_pred}. Applies transparency based on the predicted probability of the predicted class. Classification only.}
 
-\item{order}{default ordering is by \code{accuracy} (classification) or \code{RMSE} (regression). Can submit any other ordering e.g. \code{AUC}, which should be a \code{data.frame} with same column names as \code{tibble_pred}.}
+\item{order}{default ordering of columns in a heatmap (classification) or facets (regression) is by \code{accuracy} (classification) or \code{RMSE} (regression). Can submit any other ordering for heatmaps e.g. \code{AUC}, which should be a \code{data.frame} with same column names as \code{tibble_pred}.}
 
 \item{facet}{whether to facet the plots by model (regression only).}
 }
