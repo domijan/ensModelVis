@@ -239,7 +239,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
                name = forcats::fct_relevel(.data$name,
                                            names(sort(cols_order))[-1])) |>
         dplyr::left_join(temp_rmse) |>
-        ggplot(aes(x = .data$value, y = .data$truth)) +
+        ggplot(aes(y = .data$value, x = .data$truth)) +
         geom_point() +
         facet_wrap( ~ .data$RMSE + .data$name)
     }
