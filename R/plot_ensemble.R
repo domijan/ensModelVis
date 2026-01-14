@@ -4,7 +4,7 @@
 #' @param tibble_pred A `data.frame` of predictions. Each column corresponds to a candidate model.
 #' @param incorrect If `TRUE`, for observations that were correctly classified by all models, remove all but a single observation per class. Classification only.
 #' @param tibble_prob If not `NULL`, a `data.frame` with same column names as `tibble_pred`. Applies transparency based on the predicted probability of the predicted class. Classification only.
-#' @param order default ordering is by `accuracy` (classification) or `RMSE` (regression). Can submit any other ordering e.g. `AUC`, which should be a `data.frame` with same column names as `tibble_pred`.
+#' @param order default ordering of columns in a heatmap (classification) or facets (regression) is by `accuracy` (classification) or `RMSE` (regression). Can submit any other ordering for heatmaps e.g. `AUC`, which should be a `data.frame` with same column names as `tibble_pred`.
 #' @param facet whether to facet the plots by model (regression only).
 #' @return a ggplot
 #' @export
@@ -50,6 +50,7 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
     stop("truth and predictions not same length.")
   if (!is.data.frame(tibble_pred))
     stop("Predictions are not a data frame.")
+
   if (is.factor(truth)) {
     if (sum(sapply(tibble_pred, is.factor)) != ncol(tibble_pred))
       stop("tibble_pred some columns not factors")
@@ -142,12 +143,12 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
           name = forcats::fct_relevel(.data$name , names(sort(cols_order))),
           name = as.numeric(.data$name)
         ) |>
-        dplyr::rename(class = .data$x, prob = .data$y)
+        dplyr::rename(Class = .data$x, Prob = .data$y)
 
 
       p1 <- tib |>
         ggplot(aes(x = .data$name, y = .data$id)) +
-        geom_tile(aes(fill = class, alpha = .data$prob))
+        geom_tile(aes(fill = .data$Class, alpha = .data$Prob))
 
     }
 
@@ -168,8 +169,10 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
         )
 
 
-      p1 <- tib |>  ggplot(aes(x = .data$name, y = .data$id)) +
-        geom_tile(aes(fill = .data$value))
+      p1 <- tib |>
+      dplyr::rename(Class = .data$value) |>
+        ggplot(aes(x = .data$name, y = .data$id)) +
+        geom_tile(aes(fill = .data$Class))
 
     }
     p1 <- p1 +
@@ -182,14 +185,12 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
       theme(
         axis.title.x = element_blank(),
         plot.margin = margin(0.7, 0, 1.5, 0, "cm"),
-        # axis.title.y=element_blank(),
-        # axis.ticks.x=element_blank(),
-        # axis.ticks.y=element_blank(),
-        axis.text.x = element_text(angle = 30, hjust = 0)
+        axis.text.x = element_text(angle = 0, hjust = 0)
       ) +
-      xlab("") +
-      ylab("") +
       scale_fill_brewer(palette = "Set2")
+
+
+
   }else{
     if (!is.numeric(truth))
       stop("truth argument is neither factor not numeric")
@@ -206,11 +207,11 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
     if (facet == FALSE) {
       p1 <- tib |>
         tidyr::pivot_longer(-truth) |>
-        dplyr::rename(algorithm = .data$name) |>
-        ggplot(aes(x = .data$truth, y = .data$value, col = .data$algorithm)) +
+        dplyr::rename(Model = .data$name) |>
+        ggplot(aes(x = .data$truth, y = .data$value, col = .data$Model)) +
         geom_point() +
-        ylab("Prediction") +
-        xlab("Truth")
+        ylab("Predicted") +
+        xlab("Truth (Observed)")
     } else{
       if (is.null(order)) {
         rmse_vector <- tib |>
@@ -241,7 +242,10 @@ plot_ensemble <- function(truth, tibble_pred, incorrect = FALSE,  tibble_prob = 
         dplyr::left_join(temp_rmse) |>
         ggplot(aes(y = .data$value, x = .data$truth)) +
         geom_point() +
-        facet_wrap( ~ .data$RMSE + .data$name)
+        facet_wrap( ~ .data$RMSE + .data$name) +
+        ylab("Predicted") +
+        xlab("Truth (Observed)") +
+        ggtitle("Faceted by Model (RMSE)")
     }
   }
   p1
